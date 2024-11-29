@@ -232,4 +232,4 @@ for eintrag in st.session_state.verlauf: # Loops through each entry ('eintrag') 
         for merkmal, (wert, stimmt) in eintrag["Merkmale"].items()
     ]
     merkmale_str = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".join(merkmale) #Puts a space between formatted attributes for readability and alignment
-    st.markdown(f"<span style='color: black; font-weight: bold;'>{eintrag['Name']}</span>&nbsp;&nbsp; {merkmale_str}", unsafe_allow_html=True) # Displays the name of the guesses animal, followed by its attributes in green or red (color explained above)
+    st.markdown(f"<span style='color: black; font-weight: bold;'>{eintrag['Name']}</span>&nbsp;&nbsp; {merkmale_str}", unsafe_allow_html=True) # Displays the name of the guesses animal, followed by its attributes in green or red(color explained above)
