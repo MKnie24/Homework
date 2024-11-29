@@ -149,52 +149,53 @@ if eingabe_text:
 
                 gesamte_merkmale_session = gesamte_versuche * merkmale_pro_tier # Gets the total number of animals guessed so far in current game
 
-                tiere_geraten = [
-                    next((tier for tier in tiere if tier["Name"].lower() == guessed.lower()), None)
+                tiere_geraten = [ #matches the animal name to entry from the main list
+                    next((tier for tier in tiere if tier["Name"].lower() == guessed.lower()), None) #retrieves the match
                     for guessed in st.session_state.geratene_tiere
                 ]
                 tiere_geraten = [animal for animal in tiere_geraten if animal is not None]
 
-                gesamt_matches = sum(
+                gesamt_matches = sum( #sums together all attributes that match the wanted animals ones
                     sum(1 for k, v in tier_gesucht.items() if k != "Name" and animal.get(k) == v)
                     for animal in tiere_geraten
                 )
 
-                if gesamte_merkmale_session > 0:
+                if gesamte_merkmale_session > 0: #if there are attributes in the session they are estimated by the correspondance to gesamt_matches
                     base_quali = (gesamt_matches / gesamte_merkmale_session) * 100
                 else:
                     base_quali = 0
 
-                if tiere_geraten:
+                if tiere_geraten: #identifying the animal with is closest matched to the wanted animal
                     merkmale_am_ehesten = max(
                         sum(1 for k, v in tier_gesucht.items() if k != "Name" and tier_1.get(k) == v)
                         for tier_1 in tiere_geraten
-                        if tier_1["Name"] != tier_gesucht["Name"]  # Exclude correct guess
+                        if tier_1["Name"] != tier_gesucht["Name"]  #exclude correct guess
                     )
                 else:
                     merkmale_am_ehesten = 0
 
-                if merkmale_pro_tier > 0:
+                if merkmale_pro_tier > 0: #computing how close the best guess to the wanted animal was. the futher away the better the bonus
                     guter_versuch = max(0, (
                             merkmale_pro_tier - merkmale_am_ehesten) / merkmale_pro_tier * 10)
                 else:
                     guter_versuch = 0
 
 
-                strafe_hinweis = len(st.session_state.hinweise) * 5
+                strafe_hinweis = len(st.session_state.hinweise) * 5 #applies a penelty of 5% if a hint is being displayed
 
-                if st.session_state.versuche == 1:
+                if st.session_state.versuche == 1: #first try guess = 100% quality
                     quality = 100
-                elif st.session_state.versuche == 2:
+                elif st.session_state.versuche == 2: #second try guess 99% quality (first try is better but still very good guality for us)
                     quality = 99
                 else:
-                    quality = max(0,
-                                  base_quali - strafe_hinweis + guter_versuch)
+                    quality = max(0, base_quali - strafe_hinweis + guter_versuch) #computes the quality the normal way
 
+                #updates the game stats
                 st.session_state.stats["games"] += 1
                 st.session_state.stats["guesses_per_game"].append(st.session_state.versuche)
                 st.session_state.stats["quality_scores"].append(quality)
 
+                #resets the game stats for the next session
                 st.session_state.tier_gesucht = random.choice(tiere)
                 st.session_state.versuche = 0
                 st.session_state.verlauf = []
@@ -202,33 +203,33 @@ if eingabe_text:
                 st.session_state.geratene_tiere = []
                 gesamt_matches = 0
                 hinweis_counter = 0
-                st.info("Das Spiel wurde automatisch neu gestartet! Rate erneut.")
+                st.info("Das Spiel wurde automatisch neu gestartet! Rate erneut.") #information that one can start guessing again
             else:
-                if alle_merkmale_match:
+                if alle_merkmale_match: #failsafe so there is no confusion if the attributes match
                     st.warning("Die Merkmale stimmen überein, aber das gesuchte Tier wurde noch nicht gefunden!")
                 else:
-                    st.info("Falsch geraten. Versuche es erneut!")
+                    st.info("Falsch geraten. Versuche es erneut!") #wrong guess
     else:
-        st.warning("Dieses Tier existiert nicht in der Liste.")
+        st.warning("Dieses Tier existiert nicht in der Liste.") #an input not in sync with the list
 
-if st.session_state.versuche >= 6:
+if st.session_state.versuche >= 6: # If the user has made 6 or more guesses, retrieve 'tier_name' (target animal name) and its hints from 'hilfsliste' dictionary
     tier_name = st.session_state.tier_gesucht["Name"]
-    tier_hinweise = hilfsliste.get(tier_name, {})
-    if st.session_state.versuche >= 6 and len(st.session_state.hinweise) < 1:
+    tier_hinweise = hilfsliste.get(tier_name, {}) # If the target animal is not found in 'hilfsliste' an empty dicitionary gets returned
+    if st.session_state.versuche >= 6 and len(st.session_state.hinweise) < 1: # If after 6 guesses not hints have been given, add the 'size' attribute of the target animal to the hints
         st.session_state.hinweise.append(f"Größe: **{tier_hinweise.get('Größe', 'unbekannt')}**")
-    if st.session_state.versuche >= 8 and len(st.session_state.hinweise) < 2:
+    if st.session_state.versuche >= 8 and len(st.session_state.hinweise) < 2: # If after 8 guesses less than 2 hints have been given, add the 'main color' attribute of the target animal to the hints
         st.session_state.hinweise.append(f"Hauptfarbe: **{tier_hinweise.get('Hauptfarbe', 'unbekannt')}**")
-    if st.session_state.versuche >= 10 and len(st.session_state.hinweise) < 3:
+    if st.session_state.versuche >= 10 and len(st.session_state.hinweise) < 3: # If after 10 guesses less than 3 hints have been given, add the 'number of legs' attribute of the target animal to hints
         st.session_state.hinweise.append(f"Beine: **{tier_hinweise.get('Beine', 'unbekannt')}**")
-    st.write("### Hinweise:")
+    st.write("### Hinweise:") # Display all collected hints under " ### Hinweise:" (Hints), the hints are displayed with spaces and a custom style
     hints_str = "&nbsp;&nbsp;&nbsp;".join(st.session_state.hinweise)
     st.markdown(f"<span style='color: black;'>{hints_str}</span>", unsafe_allow_html=True)
 
-st.write("### Verlauf:")
-for eintrag in st.session_state.verlauf:
-    merkmale = [
+st.write("### Verlauf:") # Adds a heading for the guess history
+for eintrag in st.session_state.verlauf: # Loops through each entry ('eintrag') in the guess history ('verlauf'). For each entry a formatted string is created that inhibits the attribute ('merkmal') of the guessed animal
+    merkmale = [ # Matching attributes are displayed green and not matching attributes are displayed red
         f"<b>{merkmal}</b>: <b><span style='color: {'green' if stimmt else 'red'};'>{wert}</span></b>"
         for merkmal, (wert, stimmt) in eintrag["Merkmale"].items()
     ]
-    merkmale_str = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".join(merkmale)
-    st.markdown(f"<span style='color: black; font-weight: bold;'>{eintrag['Name']}</span>&nbsp;&nbsp; {merkmale_str}", unsafe_allow_html=True)
+    merkmale_str = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".join(merkmale) #Puts a space between formatted attributes for readability and alignment
+    st.markdown(f"<span style='color: black; font-weight: bold;'>{eintrag['Name']}</span>&nbsp;&nbsp; {merkmale_str}", unsafe_allow_html=True) # Displays the name of the guesses animal, followed by its attributes in green or red (color explained above)
