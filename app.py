@@ -1,29 +1,17 @@
 import streamlit as st
 
-background_image_url = "https://img2.wallspic.com/crops/6/6/5/3/4/143566/143566-sonnenuntergang-naturlandschaft-horizont-morgen-hirsch-2560x1440.jpg"
-
-def set_styles(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("{image_url}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: black;  /* Set default text color to black */
-        }}
-        .animal-name {{
-            color: black;  /* Change the color of the names list */
-            font-weight: bold;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
 st.title("Willkommen zum Ratespielchen!")
-st.write(
-    "Dies ist ein einfaches Ratespiel. Wähle in der Seitenleiste zwischen **Spiel** und **Statistik**."
+
+st.write("Dies ist ein einfaches Ratespiel. Wähle in der Seitenleiste zwischen **Spiel** und **Statistik**.")
+
+st.markdown(
+    """
+    Dieses Rate Spiel zeigt dir zu Beginn die möglichen erratbaren Tiere.  
+    Du kannst dann direkt anfangen, die Tiere zu erraten.  
+    Nach jedem Versuch bekommst du Feedback, wo du erfährst, wo dein geratenes Tier mit dem gesuchten übereinstimmt.  
+    Solltest du nach einigen Versuchen immer noch nicht vorwärts kommen, wird das Spiel dir weitere Hinweise geben.  
+    Hast du das gesuchte Tier erraten, wird dir die Qualität deines Versuchs auf der **Game Stats**-Seite angezeigt.
+    """
 )
-st.write("Viel Spaß!")
+
+st.write("Viel Spaß beim Spiel!")

@@ -1,21 +1,21 @@
-import streamlit as st
-import random
+import streamlit as st # streamlit libary
+import random # Python module for random values
 
-background_image_url = "https://img2.wallspic.com/crops/6/6/5/3/4/143566/143566-sonnenuntergang-naturlandschaft-horizont-morgen-hirsch-2560x1440.jpg"
+background_image_url = "https://img2.wallspic.com/crops/6/6/5/3/4/143566/143566-sonnenuntergang-naturlandschaft-horizont-morgen-hirsch-2560x1440.jpg" # Set Background
 
-def set_styles(image_url):
+def set_styles(image_url): # Applies custom CSS style to Streamlit app (background image, text style)
     st.markdown(
-        f"""
+        f""" 
         <style>
         .stApp {{
             background-image: url("{image_url}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            color: black;  /* Set default text color to black */
+            color: black;  
         }}
         .animal-name {{
-            color: black;  /* Change the color of the names list */
+            color: black; 
             font-weight: bold;
         }}
         </style>
@@ -51,7 +51,7 @@ tiere = [
     {"Name": "Eule", "Art": "Vogel", "Fell": "Nein", "Nahrung": "Fleisch", "Lebensraum": "Wälder", "Lebensweise": "Einzelgänger"},
     {"Name": "Kamel", "Art": "Säugetier", "Fell": "Ja", "Nahrung": "Pflanzen", "Lebensraum": "Wüste", "Lebensweise": "Gruppentier"},
     {"Name": "Flamingo", "Art": "Vogel", "Fell": "Nein", "Nahrung": "Pflanzen", "Lebensraum": "Gewässer", "Lebensweise": "Gruppentier"},
-    {"Name": "Ostrich", "Art": "Vogel", "Fell": "Nein", "Nahrung": "Allesfresser", "Lebensraum": "offene Landschaft", "Lebensweise": "Wechselnd"},
+    {"Name": "Strauß", "Art": "Vogel", "Fell": "Nein", "Nahrung": "Allesfresser", "Lebensraum": "offene Landschaft", "Lebensweise": "Wechselnd"},
     {"Name": "Delfin", "Art": "Säugetier", "Fell": "Nein", "Nahrung": "Fleisch", "Lebensraum": "Gewässer", "Lebensweise": "Gruppentier"},
     {"Name": "Gorilla", "Art": "Säugetier", "Fell": "Ja", "Nahrung": "Allesfresser", "Lebensraum": "Wälder", "Lebensweise": "Gruppentier"},
     {"Name": "Pferd", "Art": "Säugetier", "Fell": "Ja", "Nahrung": "Pflanzen", "Lebensraum": "offene Landschaft", "Lebensweise": "Gruppentier"},
@@ -85,25 +85,21 @@ hilfsliste = {
     "Eule": {"Größe": "Klein", "Hauptfarbe": "Braun", "Beine": 2},
     "Kamel": {"Größe": "Groß", "Hauptfarbe": "Braun", "Beine": 4},
     "Flamingo": {"Größe": "Groß", "Hauptfarbe": "Pink", "Beine": 2},
-    "Ostrich": {"Größe": "Sehr Groß", "Hauptfarbe": "Schwarz-Weiß", "Beine": 2},
+    "Strauß": {"Größe": "Sehr Groß", "Hauptfarbe": "Schwarz-Weiß", "Beine": 2},
     "Delfin": {"Größe": "Groß", "Hauptfarbe": "Grau", "Beine": 0},
     "Gorilla": {"Größe": "Groß", "Hauptfarbe": "Schwarz", "Beine": 2},
     "Pferd": {"Größe": "Groß", "Hauptfarbe": "Braun", "Beine": 4},
     "Komodowaran": {"Größe": "Groß", "Hauptfarbe": "Braun", "Beine": 4}
 }
-total_matched = 0
-hinweis_counter = 0
 
-if "tier_gesucht" not in st.session_state:
-    st.session_state.tier_gesucht = random.choice(tiere)
-    st.session_state.versuche = 0
-    st.session_state.verlauf = []
-    st.session_state.verbleibende_tiere = tiere.copy()
-    st.session_state.geratene_tiere = []
-    st.session_state.stats = {"games": 0, "guesses_per_game": [], "quality_scores": []}
-    st.session_state.hinweise = []
-    total_matched = 0
-    hinweis_counter = 0
+if "tier_gesucht" not in st.session_state: # Initializes st.session_state with default values
+    st.session_state.tier_gesucht = random.choice(tiere) # Chooses a random animal for the list
+    st.session_state.versuche = 0 # Counter for number of guesses
+    st.session_state.verlauf = [] # Tracks the previous results
+    st.session_state.verbleibende_tiere = tiere.copy() # List of animals that have not been guessed
+    st.session_state.geratene_tiere = [] # List of animals guessed
+    st.session_state.stats = {"games": 0, "guesses_per_game": [], "quality_scores": []} # Tracks game stats
+    st.session_state.hinweise = [] # Tracks amount of hints
 
 set_styles(background_image_url)
 
@@ -111,89 +107,86 @@ tier_gesucht = st.session_state.tier_gesucht
 st.title("Ratespielchen")
 st.write("Errate das gesuchte Tier in möglichst wenig Runden.")
 st.title("Tiere Übersicht - Namen")
-columns = st.columns(5)
-for idx, tier in enumerate(st.session_state.verbleibende_tiere):
-    col = columns[idx % 5]
-    with col:
-        col.markdown(f"<span class='animal-name'>{tier['Name']}</span>", unsafe_allow_html=True)
+columns = st.columns(5) # Arranges the anmial and its attributes in a table of 5 columns
+for idx, tier in enumerate(st.session_state.verbleibende_tiere): # Goes through each remaining animal in the list ( idx is the position in the list and "tier" is the information of the animal)
+    col = columns[idx % 5] # Determines in which column the animal gets placed (cycling through the 5 columns using modulo)
+    with col: # Ensures that the following content is inside the selected column
+        col.markdown(f"<span class='animal-name'>{tier['Name']}</span>", unsafe_allow_html=True) # Displays the name of the current animal in the selected column, uses raw HTML
 
-eingabe_text = st.text_input("Gib einen Tiernamen ein:")
-st.write(f"**Versuche:** {st.session_state.versuche}")
+eingabe_text = st.text_input("Gib einen Tiernamen ein:") # User input for animal game
+st.write(f"**Versuche:** {st.session_state.versuche}") # Displays number of guesses
 
 if eingabe_text:
-    eingabe_text_lower = eingabe_text.lower()
-    tiere_namen_lower = [tier["Name"].lower() for tier in tiere]
-    if eingabe_text_lower in tiere_namen_lower:
-        if eingabe_text_lower in [tier.lower() for tier in st.session_state.geratene_tiere]:
-            st.warning(f"Das Tier '{eingabe_text}' wurde bereits geraten. Versuche ein anderes!")
+    eingabe_text_lower = eingabe_text.lower() # Converts the input to lowercase letters
+    tiere_namen_lower = [tier["Name"].lower() for tier in tiere] # Creates a lowercase list of all animal names
+    if eingabe_text_lower in tiere_namen_lower: # Confirms that the input matches one animal on the list
+        if eingabe_text_lower in [tier.lower() for tier in st.session_state.geratene_tiere]: # Checks if the animal has been guessed already
+            st.warning(f"Das Tier '{eingabe_text}' wurde bereits geraten. Versuche ein anderes!") # Displays a warning if that happens
         else:
-            st.session_state.geratene_tiere.append(eingabe_text)
-            index = tiere_namen_lower.index(eingabe_text_lower)
+            st.session_state.geratene_tiere.append(eingabe_text) # Adds guessed animals to the list of guessed animals
+            index = tiere_namen_lower.index(eingabe_text_lower) # Retrieves the full details of the guessed animals and increments the guess counter
             gefundenes_tier = tiere[index]
             st.session_state.versuche += 1
-            correct_attributes = 0
-            total_attributes = len(tier_gesucht) - 1
+            richtige_merkmale = 0 # Compares each attribute (not name) of the guessed animal with the target animal
             ergebnis = {"Name": gefundenes_tier["Name"], "Merkmale": {}}
-            all_attributes_match = True
+            alle_merkmale_match = True
             for merkmal, wert in gefundenes_tier.items():
                 if merkmal != "Name":
                     match = wert == tier_gesucht[merkmal]
                     ergebnis["Merkmale"][merkmal] = (wert, match)
                     if match:
-                        correct_attributes += 1
+                        richtige_merkmale += 1
                     else:
-                        all_attributes_match = False
+                        alle_merkmale_match = False
             st.session_state.verlauf.insert(0, ergebnis)
-            if gefundenes_tier == tier_gesucht:
+            if gefundenes_tier == tier_gesucht: # Displays a message if the guessed animal is the right/target animal
                 st.success(
                     f"Richtig! Du hast das gesuchte Tier '{tier_gesucht['Name']}' in {st.session_state.versuche} Versuchen erraten!"
                 )
 
-                total_attributes_per_animal = len(tier_gesucht) - 1
-                total_guesses = len(st.session_state.geratene_tiere)
+                merkmale_pro_tier = len(tier_gesucht) - 1 # Calculates the total number of attributes (excluding Name) to determine the match score
+                gesamte_versuche = len(st.session_state.geratene_tiere)
 
-                total_attributes_in_session = total_guesses * total_attributes_per_animal
+                gesamte_merkmale_session = gesamte_versuche * merkmale_pro_tier # Gets the total number of animals guessed so far in current game
 
-                if total_attributes_in_session > 0:
-                    base_score = (total_matched / total_attributes_in_session) * 100
-                else:
-                    base_score = 0
-
-                total_attributes_per_animal = len(tier_gesucht) - 1  # Exclude "Name"
-
-                guessed_animals = [
+                tiere_geraten = [
                     next((tier for tier in tiere if tier["Name"].lower() == guessed.lower()), None)
                     for guessed in st.session_state.geratene_tiere
                 ]
-                guessed_animals = [animal for animal in guessed_animals if animal is not None]
+                tiere_geraten = [animal for animal in tiere_geraten if animal is not None]
 
-                total_matched = sum(
+                st.write("Guessed Animals:", tiere_geraten)
+
+                gesamt_matches = sum(
                     sum(1 for k, v in tier_gesucht.items() if k != "Name" and animal.get(k) == v)
-                    for animal in guessed_animals
+                    for animal in tiere_geraten
                 )
 
-                if total_attributes_in_session > 0:
-                    base_score = (total_matched / total_attributes_in_session) * 100
+                if gesamte_merkmale_session > 0:
+                    base_quali = (gesamt_matches / gesamte_merkmale_session) * 100
                 else:
-                    base_score = 0
+                    base_quali = 0
+                st.write("Total Matched Attributes:", gesamt_matches)
 
-                if guessed_animals:
-                    closest_match_attributes = max(
-                        sum(1 for k, v in tier_gesucht.items() if k != "Name" and animal.get(k) == v)
-                        for animal in guessed_animals
-                        if animal["Name"] != tier_gesucht["Name"]  # Exclude correct guess
+                if tiere_geraten:
+                    merkmale_am_ehesten = max(
+                        sum(1 for k, v in tier_gesucht.items() if k != "Name" and tier_1.get(k) == v)
+                        for tier_1 in tiere_geraten
+                        if tier_1["Name"] != tier_gesucht["Name"]  # Exclude correct guess
                     )
                 else:
-                    closest_match_attributes = 0
+                    merkmale_am_ehesten = 0
 
-                if total_attributes_per_animal > 0:
+                st.write("Closest Match Attributes (Excluding Correct Guess):", merkmale_am_ehesten)
+
+                if merkmale_pro_tier > 0:
                     closeness_score = max(0, (
-                                total_attributes_per_animal - closest_match_attributes) / total_attributes_per_animal * 10)
+                            merkmale_pro_tier - merkmale_am_ehesten) / merkmale_pro_tier * 10)
                 else:
                     closeness_score = 0
 
 
-                hints_penalty = len(st.session_state.hinweise) * 5
+                strafe_hinweis = len(st.session_state.hinweise) * 5
 
                 if st.session_state.versuche == 1:
                     quality_score = 100
@@ -201,7 +194,7 @@ if eingabe_text:
                     quality_score = 99
                 else:
                     quality_score = max(0,
-                                base_score - hints_penalty + closeness_score)
+                                        base_quali - strafe_hinweis + closeness_score)
 
                 st.session_state.stats["games"] += 1
                 st.session_state.stats["guesses_per_game"].append(st.session_state.versuche)
@@ -212,11 +205,11 @@ if eingabe_text:
                 st.session_state.verlauf = []
                 st.session_state.hinweise = []
                 st.session_state.geratene_tiere = []
-                total_matched = 0
+                gesamt_matches = 0
                 hinweis_counter = 0
                 st.info("Das Spiel wurde automatisch neu gestartet! Rate erneut.")
             else:
-                if all_attributes_match:
+                if alle_merkmale_match:
                     st.warning("Die Merkmale stimmen überein, aber das gesuchte Tier wurde noch nicht gefunden!")
                 else:
                     st.info("Falsch geraten. Versuche es erneut!")
@@ -238,9 +231,9 @@ if st.session_state.versuche >= 6:
 
 st.write("### Verlauf:")
 for eintrag in st.session_state.verlauf:
-    attributes = [
+    merkmale = [
         f"<b>{merkmal}</b>: <b><span style='color: {'green' if stimmt else 'red'};'>{wert}</span></b>"
         for merkmal, (wert, stimmt) in eintrag["Merkmale"].items()
     ]
-    attributes_str = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".join(attributes)
-    st.markdown(f"<span style='color: black; font-weight: bold;'>{eintrag['Name']}</span>&nbsp;&nbsp; {attributes_str}", unsafe_allow_html=True)
+    merkmale_str = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".join(merkmale)
+    st.markdown(f"<span style='color: black; font-weight: bold;'>{eintrag['Name']}</span>&nbsp;&nbsp; {merkmale_str}", unsafe_allow_html=True)
