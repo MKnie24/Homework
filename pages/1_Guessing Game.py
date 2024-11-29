@@ -167,8 +167,6 @@ if eingabe_text:
                 ]
                 guessed_animals = [animal for animal in guessed_animals if animal is not None]
 
-                st.write("Guessed Animals:", guessed_animals)
-
                 total_matched = sum(
                     sum(1 for k, v in tier_gesucht.items() if k != "Name" and animal.get(k) == v)
                     for animal in guessed_animals
@@ -178,7 +176,6 @@ if eingabe_text:
                     base_score = (total_matched / total_attributes_in_session) * 100
                 else:
                     base_score = 0
-                st.write("Total Matched Attributes:", total_matched)
 
                 if guessed_animals:
                     closest_match_attributes = max(
@@ -188,8 +185,6 @@ if eingabe_text:
                     )
                 else:
                     closest_match_attributes = 0
-
-                st.write("Closest Match Attributes (Excluding Correct Guess):", closest_match_attributes)
 
                 if total_attributes_per_animal > 0:
                     closeness_score = max(0, (
