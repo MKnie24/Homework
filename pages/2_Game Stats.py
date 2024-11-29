@@ -47,19 +47,19 @@ Die **Qualitätsbewertung** gibt an, wie effizient du das Spiel gelöst hast.
 """, unsafe_allow_html=True)
 
 # Display number of games played
-games_played = st.session_state.stats["games"]
-st.write(f"**Anzahl der gespielten Spiele:** {games_played}")
+spiele_gespielt = st.session_state.stats["games"]
+st.write(f"**Anzahl der gespielten Spiele:** {spiele_gespielt}")
 
 # If games have been played, show detailed stats
-if games_played > 0:
+if spiele_gespielt > 0:
     # Calculate average guesses per game
-    total_guesses = sum(st.session_state.stats["guesses_per_game"])
-    avg_guesses = total_guesses / games_played
-    st.write(f"**Durchschnittliche Anzahl der Versuche pro Spiel:** {avg_guesses:.2f}")
+    vesuche_pro_spiel = sum(st.session_state.stats["guesses_per_game"])
+    avg_versuche = vesuche_pro_spiel / spiele_gespielt
+    st.write(f"**Durchschnittliche Anzahl der Versuche pro Spiel:** {avg_versuche:.2f}")
 
     # Create a DataFrame for detailed statistics
     df = pd.DataFrame({
-        "Spiel": range(1, games_played + 1),
+        "Spiel": range(1, spiele_gespielt + 1),
         "Versuche": st.session_state.stats["guesses_per_game"],
         "Qualität (%)": [f"{q:.1f}" for q in st.session_state.stats["quality_scores"]]
     })
@@ -86,10 +86,10 @@ else:
 
 # Option to reset statistics
 st.write("### Statistiken zurücksetzen")
-confirm_reset = st.checkbox("Ich möchte die Statistiken zurücksetzen.")
+bst_reset = st.checkbox("Ich möchte die Statistiken zurücksetzen.")
 
 # Provide feedback for reset action
-if confirm_reset:
+if bst_reset:
     if st.button("Statistiken zurücksetzen"):
         st.session_state.stats = {"games": 0, "guesses_per_game": [], "quality_scores": []}
         st.success("Statistiken wurden erfolgreich zurückgesetzt.")

@@ -155,8 +155,6 @@ if eingabe_text:
                 ]
                 tiere_geraten = [animal for animal in tiere_geraten if animal is not None]
 
-                st.write("Guessed Animals:", tiere_geraten)
-
                 gesamt_matches = sum(
                     sum(1 for k, v in tier_gesucht.items() if k != "Name" and animal.get(k) == v)
                     for animal in tiere_geraten
@@ -166,7 +164,6 @@ if eingabe_text:
                     base_quali = (gesamt_matches / gesamte_merkmale_session) * 100
                 else:
                     base_quali = 0
-                st.write("Total Matched Attributes:", gesamt_matches)
 
                 if tiere_geraten:
                     merkmale_am_ehesten = max(
@@ -177,28 +174,26 @@ if eingabe_text:
                 else:
                     merkmale_am_ehesten = 0
 
-                st.write("Closest Match Attributes (Excluding Correct Guess):", merkmale_am_ehesten)
-
                 if merkmale_pro_tier > 0:
-                    closeness_score = max(0, (
+                    guter_versuch = max(0, (
                             merkmale_pro_tier - merkmale_am_ehesten) / merkmale_pro_tier * 10)
                 else:
-                    closeness_score = 0
+                    guter_versuch = 0
 
 
                 strafe_hinweis = len(st.session_state.hinweise) * 5
 
                 if st.session_state.versuche == 1:
-                    quality_score = 100
+                    quality = 100
                 elif st.session_state.versuche == 2:
-                    quality_score = 99
+                    quality = 99
                 else:
-                    quality_score = max(0,
-                                        base_quali - strafe_hinweis + closeness_score)
+                    quality = max(0,
+                                  base_quali - strafe_hinweis + guter_versuch)
 
                 st.session_state.stats["games"] += 1
                 st.session_state.stats["guesses_per_game"].append(st.session_state.versuche)
-                st.session_state.stats["quality_scores"].append(quality_score)
+                st.session_state.stats["quality_scores"].append(quality)
 
                 st.session_state.tier_gesucht = random.choice(tiere)
                 st.session_state.versuche = 0
